@@ -1,0 +1,308 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "Vanshika Mehra - PCV.ipynb",
+      "provenance": [],
+      "collapsed_sections": [],
+      "toc_visible": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "5ZR0B9Hw7LIQ",
+        "outputId": "0348d451-a1b3-4290-eafd-9615c618726a"
+      },
+      "source": [
+        " !pip install keras-tuner"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Requirement already satisfied: keras-tuner in /usr/local/lib/python3.7/dist-packages (1.0.2)\n",
+            "Requirement already satisfied: packaging in /usr/local/lib/python3.7/dist-packages (from keras-tuner) (20.9)\n",
+            "Requirement already satisfied: requests in /usr/local/lib/python3.7/dist-packages (from keras-tuner) (2.23.0)\n",
+            "Requirement already satisfied: scipy in /usr/local/lib/python3.7/dist-packages (from keras-tuner) (1.4.1)\n",
+            "Requirement already satisfied: scikit-learn in /usr/local/lib/python3.7/dist-packages (from keras-tuner) (0.22.2.post1)\n",
+            "Requirement already satisfied: numpy in /usr/local/lib/python3.7/dist-packages (from keras-tuner) (1.19.5)\n",
+            "Requirement already satisfied: future in /usr/local/lib/python3.7/dist-packages (from keras-tuner) (0.16.0)\n",
+            "Requirement already satisfied: tqdm in /usr/local/lib/python3.7/dist-packages (from keras-tuner) (4.41.1)\n",
+            "Requirement already satisfied: tabulate in /usr/local/lib/python3.7/dist-packages (from keras-tuner) (0.8.9)\n",
+            "Requirement already satisfied: terminaltables in /usr/local/lib/python3.7/dist-packages (from keras-tuner) (3.1.0)\n",
+            "Requirement already satisfied: colorama in /usr/local/lib/python3.7/dist-packages (from keras-tuner) (0.4.4)\n",
+            "Requirement already satisfied: pyparsing>=2.0.2 in /usr/local/lib/python3.7/dist-packages (from packaging->keras-tuner) (2.4.7)\n",
+            "Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /usr/local/lib/python3.7/dist-packages (from requests->keras-tuner) (1.24.3)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.7/dist-packages (from requests->keras-tuner) (2020.12.5)\n",
+            "Requirement already satisfied: chardet<4,>=3.0.2 in /usr/local/lib/python3.7/dist-packages (from requests->keras-tuner) (3.0.4)\n",
+            "Requirement already satisfied: idna<3,>=2.5 in /usr/local/lib/python3.7/dist-packages (from requests->keras-tuner) (2.10)\n",
+            "Requirement already satisfied: joblib>=0.11 in /usr/local/lib/python3.7/dist-packages (from scikit-learn->keras-tuner) (1.0.1)\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "aB5BU_TX7ccn"
+      },
+      "source": [
+        " \n",
+        "import tensorflow as tf\n",
+        " \n",
+        "from tensorflow import keras\n",
+        " \n",
+        "import numpy as np"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "MWZGZbt57qR9"
+      },
+      "source": [
+        " fashion_mnist=keras.datasets.fashion_mnist"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "5DQRDuxF7wSQ"
+      },
+      "source": [
+        " (train_images, train_labels), (test_images,test_labels)=fashion_mnist.load_data()"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "rdlLgoqq8N7T"
+      },
+      "source": [
+        " \n",
+        "train_images=train_images/255.0 \n",
+        "test_images=test_images/255.0"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "1LERqZLC8xrM",
+        "outputId": "5617af2b-1bc1-43ac-d7b6-2b586f189e57"
+      },
+      "source": [
+        " train_images[0].shape"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "(28, 28)"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 31
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "_BhOVVil8yK7"
+      },
+      "source": [
+        "train_images = train_images.reshape (len(train_images),28,28,1)\n",
+        " \n",
+        "test_images= test_images.reshape(len(test_images), 28, 28,1)"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "LMkYt4axP1Mg"
+      },
+      "source": [
+        "from keras.models import Sequential \n",
+        "from keras.layers import Dense"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "PnGzisfzOU6J"
+      },
+      "source": [
+        " \n",
+        "def build_model(hp):\n",
+        "  model = keras.Sequential([\n",
+        "    keras.layers.Conv2D(\n",
+        "      filters=hp.Int('conv_1_filter', min_value=32, max_value=128, step=16),\n",
+        "      kernel_size=hp.Choice('conv_1_kernel', values = [3,5]),\n",
+        "      activation='relu', \n",
+        "      input_shape=(28,28,1)\n",
+        "    ), \n",
+        "    keras.layers.Conv2D(\n",
+        "      filters=hp.Int('conv_2_filter', min_value=32, max_value=64, step=16),\n",
+        "      kernel_size=hp.Choice('conv_2_kernel', values = [3,5]),\n",
+        "      activation='relu'\n",
+        "    ),\n",
+        "    keras.layers.Flatten(),\n",
+        "    keras.layers.Dense(\n",
+        "      units=hp.Int('dense_1_units', min_value=32, max_value=128, step=16),\n",
+        "      activation='relu'\n",
+        "    ),\n",
+        "    keras.layers.Dense(10,activation='softmax')\n",
+        "  ])\n",
+        " \n",
+        "  model.compile(optimizer=keras.optimizers.Adam(hp.Choice('learning_rate', values=[1e-2, 1e-3])),\n",
+        "              loss='sparse_categorical_crossentropy',\n",
+        "              metrics=['accuracy'])\n",
+        "  return model"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "wgG_T3l__USa"
+      },
+      "source": [
+        " \n",
+        "from kerastuner import RandomSearch\n",
+        " \n",
+        "from kerastuner.engine.hyperparameters import HyperParameters"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "EIn3Zok8_j9z"
+      },
+      "source": [
+        " tuner_search=RandomSearch(build_model,\n",
+        " \n",
+        "objective='val_accuracy',\n",
+        " \n",
+        "max_trials=5, directory='output', project_name=\"Mnist Fashion\")"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "lgLHBZHOCNrT"
+      },
+      "source": [
+        "tuner_search.search(train_images,train_labels, epochs=3, validation_split=0.1)"
+      ],
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "U1hn9i8gCjbf",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "8e9db23d-feae-470f-8cf3-2be990970a98"
+      },
+      "source": [
+        " model=tuner_search.get_best_models(num_models=1)[0]"
+      ],
+      "execution_count": 43,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "WARNING:tensorflow:Unresolved object in checkpoint: (root).optimizer.iter\n",
+            "WARNING:tensorflow:Unresolved object in checkpoint: (root).optimizer.beta_1\n",
+            "WARNING:tensorflow:Unresolved object in checkpoint: (root).optimizer.beta_2\n",
+            "WARNING:tensorflow:Unresolved object in checkpoint: (root).optimizer.decay\n",
+            "WARNING:tensorflow:Unresolved object in checkpoint: (root).optimizer.learning_rate\n",
+            "WARNING:tensorflow:A checkpoint was restored (e.g. tf.train.Checkpoint.restore or tf.keras.Model.load_weights) but not all checkpointed values were used. See above for specific issues. Use expect_partial() on the load status object, e.g. tf.train.Checkpoint.restore(...).expect_partial(), to silence these warnings, or use assert_consumed() to make the check explicit. See https://www.tensorflow.org/guide/checkpoint#loading_mechanics for details.\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Vqh85jHqCj-5",
+        "outputId": "e6d987be-3be0-4398-ac5e-056ff3342d9f"
+      },
+      "source": [
+        "  model.summary()"
+      ],
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "Model: \"sequential\"\n",
+            "_________________________________________________________________\n",
+            "Layer (type)                 Output Shape              Param #   \n",
+            "=================================================================\n",
+            "conv2d (Conv2D)              (None, 26, 26, 80)        800       \n",
+            "_________________________________________________________________\n",
+            "conv2d_1 (Conv2D)            (None, 24, 24, 48)        34608     \n",
+            "_________________________________________________________________\n",
+            "flatten (Flatten)            (None, 27648)             0         \n",
+            "_________________________________________________________________\n",
+            "dense (Dense)                (None, 128)               3539072   \n",
+            "_________________________________________________________________\n",
+            "dense_1 (Dense)              (None, 10)                1290      \n",
+            "=================================================================\n",
+            "Total params: 3,575,770\n",
+            "Trainable params: 3,575,770\n",
+            "Non-trainable params: 0\n",
+            "_________________________________________________________________\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    }
+  ]
+}
